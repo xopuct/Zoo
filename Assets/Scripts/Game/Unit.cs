@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Zoo
@@ -10,14 +9,17 @@ namespace Zoo
 
     public class Unit : MonoBehaviour
     {
-        public AnimalDefinition AnimalDefinition;
+        public AnimalDefinition Config;
         public Rigidbody Rigidbody;
         public Collider Collider;
 
         public int HealthMax;
         public int HealthCurrent;
+        public bool IsDead;
 
         public IMovementController MovementController;
+        public ConsumptionType Consumption => Config.Consumption;
+        public int Rank => Config.Rank;
 
         private void OnTriggerEnter(Collider other)
         {

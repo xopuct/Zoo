@@ -8,12 +8,13 @@ namespace Zoo
         public static Unit CreateUnit(AnimalDefinition animalDefinition)
         {
             var inst = new GameObject($"Animal/{animalDefinition.Name}");
+            inst.layer = LayerMask.NameToLayer("Unit");
             var unit = inst.AddComponent<Unit>();
             var instVisual = GameObject.Instantiate(animalDefinition.Visuals, inst.transform);
             instVisual.name = "Visuals";
             unit.Collider = instVisual.GetComponent<Collider>();
 
-            unit.AnimalDefinition = animalDefinition;
+            unit.Config = animalDefinition;
             unit.Rigidbody = inst.AddComponent<Rigidbody>();
             unit.HealthMax = UnityEngine.Random.Range(animalDefinition.HealthMin, animalDefinition.HealthMax);
             unit.HealthCurrent = unit.HealthMax;

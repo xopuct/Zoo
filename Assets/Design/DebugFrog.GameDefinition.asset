@@ -15,6 +15,6 @@ MonoBehaviour:
   Animals:
   - Animal: {fileID: 11400000, guid: bb534039dfa504b2f88fabd7a96dc269, type: 2}
     Weight: 3
-  AnimalSpawnFirstTime: 0
+  AnimalSpawnFirstTime: -1
   AnimalSpawnIntervalMin: 100
   AnimalSpawnIntervalMax: 100

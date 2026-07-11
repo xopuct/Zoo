@@ -20,10 +20,10 @@ MonoBehaviour:
   Rank: 0
   Movement: 1
   ConfigMovementJump:
-    JumpDistance: 2
+    JumpDistance: 4
     JumpInterval: 2
-    RotationDeltaPerJump: 30
-    JumpHeight: 2
+    JumpRotationArc: 30
+    JumpHeight: 1
   ConfigMovementCrawl:
     Speed: 0
     RotationSpeed: 0

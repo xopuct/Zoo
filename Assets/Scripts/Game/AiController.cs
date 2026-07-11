@@ -1,6 +1,4 @@
-using System;
 using Unity.VisualScripting;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -59,9 +57,47 @@ namespace Zoo
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Default"))
+            if (Unit.IsDead || collision.gameObject.layer == LayerMask.NameToLayer("Default"))
             {
                 return;
+            }
+
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Unit"))
+            {
+                var opponent = collision.gameObject.GetComponent<Unit>();
+                if (Unit.Consumption == ConsumptionType.Predator && !opponent.IsDead)
+                {
+                    var opponentConsumption = opponent.Consumption;
+                    if (opponentConsumption == ConsumptionType.Prey)
+                    {
+                        GameManager.Instance.Kill(opponent, Unit);
+                    }
+                    else if (opponent.Rank != Unit.Rank)
+                    {
+                        if (opponent.Rank < Unit.Rank)
+                        {
+                            GameManager.Instance.Kill(opponent, Unit);
+                        }
+                        else
+                        {
+                            GameManager.Instance.Kill(Unit, opponent);
+                        }
+                    }
+                    else
+                    {
+                        var healthBefore = Unit.HealthCurrent;
+                        Unit.HealthCurrent -= opponent.HealthCurrent;
+                        opponent.HealthCurrent -= healthBefore;
+                        if (opponent.HealthCurrent < 0)
+                        {
+                            GameManager.Instance.Kill(opponent, Unit);
+                        }
+                        else if (Unit.HealthCurrent < 0)
+                        {
+                            GameManager.Instance.Kill(Unit, opponent);
+                        }
+                    }
+                }
             }
 
             UpdateMovementGoal();
@@ -70,7 +106,6 @@ namespace Zoo
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            var nextDirection = (MovementGoal - transform.position).normalized;
             Gizmos.DrawSphere(MovementGoal, 0.1f);
         }
     }

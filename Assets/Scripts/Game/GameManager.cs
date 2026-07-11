@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Zoo
 {
-    public class GameManager : MonoBehaviour
+    // TODO Replace singleton with a service locator
+    public class GameManager : Singleton<GameManager>
     {
         public GameDefinition Definition;
         public BoxCollider WorldArea;
@@ -11,6 +12,7 @@ namespace Zoo
 
         private float lastSpawnTime;
         private float nextSpawnInterval;
+
         [ShowInInspector]
         [Title("Debug")]
         private int animalSpawnCount;
@@ -61,6 +63,13 @@ namespace Zoo
             }
 
             animalSpawnCount++;
+        }
+
+        public void Kill(Unit victim, Unit killer)
+        {
+            victim.IsDead = true;
+            GameObject.Destroy(victim.gameObject);
+            Debug.Log("Tasty");
         }
 
         private void UpdateTime()
