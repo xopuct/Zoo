@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Zoo
@@ -5,6 +6,17 @@ namespace Zoo
     public interface IMovementController
     {
         Vector3 MovementGoal { get; set; }
+
+        public static IMovementController Construct(Unit unit,
+            AnimalDefinition config)
+        {
+            return config.Movement switch
+            {
+                MovementType.Jump => MovementJump.Construct(unit, config.ConfigMovementJump),
+                MovementType.Crawl => MovementCrawl.Construct(unit, config.ConfigMovementCrawl),
+                _ => throw new ArgumentException($"Unknown movement config type {config.Movement}")
+            };
+        }
     }
 
     public class Unit : MonoBehaviour
@@ -20,10 +32,24 @@ namespace Zoo
         public ConsumptionType Consumption => Config.Consumption;
         public int Rank => Config.Rank;
 
-        private void OnTriggerEnter(Collider other)
+        public static Unit Construct(AnimalDefinition animalDefinition)
         {
-            // if (other.gameObject.layer != LayerMask.NameToLayer("Default"))
-            //     Debug.Log("Unit hit " + other.name);
+            var inst = new GameObject($"Animal/{animalDefinition.Name}");
+            inst.layer = LayerMask.NameToLayer("Unit");
+            var unit = inst.AddComponent<Unit>();
+            var instVisual = GameObject.Instantiate(animalDefinition.Visuals, inst.transform);
+            instVisual.name = "Visuals";
+            unit.Collider = instVisual.GetComponent<Collider>();
+
+            unit.Config = animalDefinition;
+            unit.Rigidbody = inst.AddComponent<Rigidbody>();
+            unit.HealthMax = UnityEngine.Random.Range(animalDefinition.HealthMin, animalDefinition.HealthMax);
+            unit.HealthCurrent = unit.HealthMax;
+
+            unit.MovementController = IMovementController.Construct(unit, animalDefinition);
+            AiController.Construct(unit);
+
+            return unit;
         }
     }
 }

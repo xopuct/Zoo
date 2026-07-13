@@ -12,7 +12,7 @@ namespace Zoo
         private Rigidbody Rigidbody => unit.Rigidbody;
 
 
-        public static MovementCrawl Init(Unit unit, MovementConfigCrawl config)
+        public static MovementCrawl Construct(Unit unit, MovementConfigCrawl config)
         {
             var inst = unit.gameObject.AddComponent<MovementCrawl>();
             inst.InitInternal(unit, config);

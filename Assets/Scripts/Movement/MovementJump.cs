@@ -13,7 +13,7 @@ namespace Zoo
         private bool isGrounded;
         private float rotatePerSec = 0.5f;
 
-        public static MovementJump Init(Unit unit, MovementConfigJump config)
+        public static MovementJump Construct(Unit unit, MovementConfigJump config)
         {
             var inst = unit.gameObject.AddComponent<MovementJump>();
             inst.InitInternal(unit, config);

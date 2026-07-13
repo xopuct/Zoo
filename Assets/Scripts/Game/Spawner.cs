@@ -45,7 +45,7 @@ namespace Zoo
         [Title("Debug")]
         public void SpawnAnimal(AnimalDefinition animalDefinition)
         {
-            var unit = UnitConstructor.CreateUnit(animalDefinition);
+            var unit = Unit.Construct(animalDefinition);
             var attempts = 15;
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
             float halfWidth = GameService.WorldArea.size.x / 2;

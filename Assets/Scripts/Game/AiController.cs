@@ -20,7 +20,7 @@ namespace Zoo
 
         private float sqrProximity = 0.2f * 0.2f;
 
-        public static void Initialize(Unit unit)
+        public static void Construct(Unit unit)
         {
             var controller = unit.gameObject.AddComponent<AiController>();
             controller.InitInternal(unit);
