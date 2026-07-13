@@ -12,6 +12,7 @@ namespace Zoo
         public void InstallBindings(ContainerBuilder builder)
         {
             builder.RegisterValue(Construct());
+            // Probably better to instantiate it in the scene
             new GameObject("Spawner", typeof(Spawner));
         }
 
