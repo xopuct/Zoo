@@ -15,7 +15,6 @@ namespace Zoo
 
         public int HealthMax;
         public int HealthCurrent;
-        public bool IsDead;
 
         public IMovementController MovementController;
         public ConsumptionType Consumption => Config.Consumption;

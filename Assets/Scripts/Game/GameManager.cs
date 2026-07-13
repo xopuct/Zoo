@@ -67,7 +67,6 @@ namespace Zoo
 
         public void Kill(Unit victim, Unit killer)
         {
-            victim.IsDead = true;
             GameObject.Destroy(victim.gameObject);
             Debug.Log("Tasty");
         }

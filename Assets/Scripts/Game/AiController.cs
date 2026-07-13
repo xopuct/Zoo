@@ -57,7 +57,7 @@ namespace Zoo
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (Unit.IsDead || collision.gameObject.layer == LayerMask.NameToLayer("Default"))
+            if (Unit.HealthCurrent <= 0 || collision.gameObject.layer == LayerMask.NameToLayer("Default"))
             {
                 return;
             }
@@ -65,37 +65,23 @@ namespace Zoo
             if (collision.gameObject.layer == LayerMask.NameToLayer("Unit"))
             {
                 var opponent = collision.gameObject.GetComponent<Unit>();
-                if (Unit.Consumption == ConsumptionType.Predator && !opponent.IsDead)
+                if (Unit.Consumption == ConsumptionType.Predator)
                 {
                     var opponentConsumption = opponent.Consumption;
                     if (opponentConsumption == ConsumptionType.Prey)
                     {
                         GameManager.Instance.Kill(opponent, Unit);
                     }
-                    else if (opponent.Rank != Unit.Rank)
+
+                    if (opponent.Rank < Unit.Rank)
                     {
-                        if (opponent.Rank < Unit.Rank)
-                        {
-                            GameManager.Instance.Kill(opponent, Unit);
-                        }
-                        else
-                        {
-                            GameManager.Instance.Kill(Unit, opponent);
-                        }
+                        GameManager.Instance.Kill(opponent, Unit);
                     }
-                    else
+                    else if (opponent.HealthCurrent < Unit.HealthCurrent)
                     {
-                        var healthBefore = Unit.HealthCurrent;
-                        Unit.HealthCurrent -= opponent.HealthCurrent;
-                        opponent.HealthCurrent -= healthBefore;
-                        if (opponent.HealthCurrent < 0)
-                        {
-                            GameManager.Instance.Kill(opponent, Unit);
-                        }
-                        else if (Unit.HealthCurrent < 0)
-                        {
-                            GameManager.Instance.Kill(Unit, opponent);
-                        }
+                        GameManager.Instance.Kill(opponent, Unit);
+                        Unit.HealthCurrent-= opponent.HealthCurrent;
+                        Debug.Log("Kill");
                     }
                 }
             }
