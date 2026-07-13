@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using Reflex.Attributes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,6 +8,9 @@ namespace Zoo
     public class AiController : MonoBehaviour
     {
         public Unit Unit;
+
+        [Inject]
+        public GameService GameService;
 
         private Vector3 MovementGoal
         {
@@ -19,7 +22,7 @@ namespace Zoo
 
         public static void Initialize(Unit unit)
         {
-            var controller = unit.AddComponent<AiController>();
+            var controller = unit.gameObject.AddComponent<AiController>();
             controller.InitInternal(unit);
         }
 
@@ -41,7 +44,9 @@ namespace Zoo
         private void UpdateMovementGoal()
         {
             //TODO  Use DI for resolve level size;
-            MovementGoal = new Vector3(Random.Range(-20, 20), transform.position.y, Random.Range(-20, 20));
+            var worldSize = GameService.WorldArea.size;
+            MovementGoal = new Vector3(Random.Range(-worldSize.x, worldSize.x), transform.position.y,
+                Random.Range(-worldSize.y, worldSize.y));
         }
 
         public void OnTriggerExit(Collider other)
@@ -70,17 +75,17 @@ namespace Zoo
                     var opponentConsumption = opponent.Consumption;
                     if (opponentConsumption == ConsumptionType.Prey)
                     {
-                        GameManager.Instance.Kill(opponent, Unit);
+                        GameService.Kill(opponent, Unit);
                     }
 
                     if (opponent.Rank < Unit.Rank)
                     {
-                        GameManager.Instance.Kill(opponent, Unit);
+                        GameService.Kill(opponent, Unit);
                     }
                     else if (opponent.HealthCurrent < Unit.HealthCurrent)
                     {
-                        GameManager.Instance.Kill(opponent, Unit);
-                        Unit.HealthCurrent-= opponent.HealthCurrent;
+                        GameService.Kill(opponent, Unit);
+                        Unit.HealthCurrent -= opponent.HealthCurrent;
                         Debug.Log("Kill");
                     }
                 }
