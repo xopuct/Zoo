@@ -70,23 +70,21 @@ namespace Zoo
             if (collision.gameObject.layer == LayerMask.NameToLayer("Unit"))
             {
                 var opponent = collision.gameObject.GetComponent<Unit>();
-                if (Unit.Consumption == ConsumptionType.Predator)
+                if (Unit.Consumption == ConsumptionType.Predator && opponent.HealthCurrent > 0)
                 {
                     var opponentConsumption = opponent.Consumption;
                     if (opponentConsumption == ConsumptionType.Prey)
                     {
                         GameService.Kill(opponent, Unit);
                     }
-
-                    if (opponent.Rank < Unit.Rank)
+                    else if (opponent.Rank < Unit.Rank)
                     {
                         GameService.Kill(opponent, Unit);
                     }
-                    else if (opponent.HealthCurrent < Unit.HealthCurrent)
+                    else if (opponent.HealthCurrent <= Unit.HealthCurrent)
                     {
-                        GameService.Kill(opponent, Unit);
                         Unit.HealthCurrent -= opponent.HealthCurrent;
-                        Debug.Log("Kill");
+                        GameService.Kill(opponent, Unit);
                     }
                 }
             }

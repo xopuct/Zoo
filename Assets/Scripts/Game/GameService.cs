@@ -20,6 +20,7 @@ namespace Zoo
 
         public void Kill(Unit victim, Unit killer)
         {
+            victim.HealthCurrent = 0;
             GameObject.Destroy(victim.gameObject);
             OnKillEvent?.Invoke(victim, killer);
             Debug.Log("Tasty");
