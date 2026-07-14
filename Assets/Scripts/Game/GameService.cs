@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Reflex.Attributes;
 using TriInspector;
 using UnityEngine;
 
@@ -19,6 +18,9 @@ namespace Zoo
 
         [ShowInInspector]
         public LayerMask SpawnMask { get; init; }
+
+        public LayerMask CollisionMask { get; set; }
+        public LayerMask UnitMask { get; set; }
 
         private Dictionary<string, GameObject> folders = new();
 

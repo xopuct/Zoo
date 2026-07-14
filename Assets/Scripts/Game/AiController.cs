@@ -19,6 +19,8 @@ namespace Zoo
         }
 
         private float sqrProximity = 0.2f * 0.2f;
+        private float smallestWorldSize = 0;
+        private float largestUnitdSize = 0;
 
         public static void Construct(Unit unit)
         {
@@ -29,13 +31,14 @@ namespace Zoo
         private void InitInternal(Unit unit)
         {
             Unit = unit;
-            var largestScale = Mathf.Max(Unit.Collider.bounds.size.x, Unit.Collider.bounds.size.z);
-            sqrProximity = largestScale * largestScale * 2;
         }
 
         private void Start()
         {
             UpdateMovementGoal();
+            largestUnitdSize = Mathf.Max(Unit.Collider.bounds.size.x, Unit.Collider.bounds.size.z);
+            sqrProximity = largestUnitdSize * largestUnitdSize * 2;
+            smallestWorldSize = Mathf.Min(GameService.WorldArea.size.x, GameService.WorldArea.size.z);
         }
 
         private void Update()
@@ -67,38 +70,72 @@ namespace Zoo
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (Unit.HealthCurrent <= 0 || collision.gameObject.layer == LayerMask.NameToLayer("Default"))
+            if (Unit.HealthCurrent <= 0)
             {
                 return;
             }
 
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Unit"))
+            if (MaybeKill(collision))
             {
-                var opponent = collision.gameObject.GetComponent<Unit>();
-                if (Unit.Consumption == ConsumptionType.Predator && opponent.HealthCurrent > 0)
+                return;
+            }
+
+            if (Test(transform.position, transform.right * smallestWorldSize, out var newGoal) ||
+                Test(transform.position, -transform.right * smallestWorldSize, out newGoal))
+            {
+                MovementGoal = newGoal;
+            }
+            else
+            {
+                UpdateMovementGoal();
+            }
+        }
+
+        private bool Test(Vector3 position, Vector3 direction, out Vector3 movementGoal)
+        {
+            movementGoal = Vector3.zero;
+            if (!Physics.Linecast(position, direction.normalized * smallestWorldSize, out var hit,
+                    GameService.CollisionMask) ||
+                Vector3.Distance(hit.collider.transform.position, position) > largestUnitdSize * 2)
+            {
+                movementGoal = position + direction.normalized * smallestWorldSize * 1.5f;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool MaybeKill(Collision collision)
+        {
+            if ((GameService.UnitMask.value & (1 << collision.gameObject.layer)) == 0)
+            {
+                return false;
+            }
+
+            var opponent = collision.gameObject.GetComponent<Unit>();
+            if (Unit.Consumption == ConsumptionType.Predator && opponent.HealthCurrent > 0)
+            {
+                var opponentConsumption = opponent.Consumption;
+                if (opponentConsumption == ConsumptionType.Prey || opponent.Rank < Unit.Rank)
                 {
-                    var opponentConsumption = opponent.Consumption;
-                    if (opponentConsumption == ConsumptionType.Prey)
+                    GameService.Kill(opponent, Unit);
+                    return true;
+                }
+
+                if (opponent.HealthCurrent <= Unit.HealthCurrent)
+                {
+                    Unit.HealthCurrent -= opponent.HealthCurrent;
+                    GameService.Kill(opponent, Unit);
+                    if (Unit.HealthCurrent == 0)
                     {
-                        GameService.Kill(opponent, Unit);
+                        GameService.Kill(Unit, opponent);
                     }
-                    else if (opponent.Rank < Unit.Rank)
-                    {
-                        GameService.Kill(opponent, Unit);
-                    }
-                    else if (opponent.HealthCurrent <= Unit.HealthCurrent)
-                    {
-                        Unit.HealthCurrent -= opponent.HealthCurrent;
-                        GameService.Kill(opponent, Unit);
-                        if (Unit.HealthCurrent == 0)
-                        {
-                            GameService.Kill(Unit, opponent);
-                        }
-                    }
+
+                    return true;
                 }
             }
 
-            UpdateMovementGoal();
+            return false;
         }
 
         private void OnDrawGizmosSelected()

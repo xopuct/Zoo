@@ -8,6 +8,8 @@ namespace Zoo
         public GameDefinition Definition;
         public BoxCollider WorldArea;
         public LayerMask SpawnMask;
+        public LayerMask CollisionMask;
+        public LayerMask UnitMask;
 
         public void InstallBindings(ContainerBuilder builder)
         {
@@ -18,7 +20,14 @@ namespace Zoo
 
         private GameService Construct()
         {
-            return new GameService() { Definition = Definition, WorldArea = WorldArea, SpawnMask = SpawnMask, };
+            return new GameService()
+            {
+                Definition = Definition,
+                WorldArea = WorldArea,
+                SpawnMask = SpawnMask,
+                CollisionMask = CollisionMask,
+                UnitMask = UnitMask
+            };
         }
     }
 }
