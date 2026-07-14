@@ -63,7 +63,15 @@ namespace Zoo
 
             if (!CameraHelper.IsPointInsideCamera(cameraService.Camera, transform.position))
             {
-                MovementGoal = Vector3.zero;
+                if (CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.5f, gameService.GravityTestMask,
+                        cameraService.Camera.transform.position.y * 2, out var point))
+                {
+                    MovementGoal = point.SetY(transform.position.y);
+                }
+                else
+                {
+                    MovementGoal = Vector3.zero;
+                }
             }
         }
 
@@ -80,17 +88,6 @@ namespace Zoo
                 MovementGoal = new Vector3(Random.Range(-worldSize.x, worldSize.x), transform.position.y,
                     Random.Range(-worldSize.y, worldSize.y));
             }
-        }
-
-        public void OnTriggerExit(Collider other)
-        {
-            // Replace it with something more robust
-            if (other.gameObject.layer != LayerMask.NameToLayer("Ignore Raycast"))
-            {
-                return;
-            }
-
-            MovementGoal = Vector3.zero;
         }
 
         private void OnCollisionEnter(Collision collision)
