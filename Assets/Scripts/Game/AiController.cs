@@ -116,9 +116,9 @@ namespace Zoo
         private bool Test(Vector3 position, Vector3 direction, out Vector3 movementGoal)
         {
             movementGoal = Vector3.zero;
-            if (!Physics.Linecast(position, direction.normalized * smallestWorldSize, out var hit,
+            if (!Physics.Linecast(position, position + direction.normalized * smallestWorldSize, out var hit,
                     gameService.CollisionMask) ||
-                Vector3.Distance(hit.collider.transform.position, position) > largestUnitdSize * 2)
+                hit.distance > largestUnitdSize * 2)
             {
                 movementGoal = position + direction.normalized * smallestWorldSize * 1.5f;
                 return true;
