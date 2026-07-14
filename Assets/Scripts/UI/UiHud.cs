@@ -1,15 +1,12 @@
 using Reflex.Attributes;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Zoo
 {
     public class UiHud : MonoBehaviour
     {
-        [FormerlySerializedAs("TotalEnemiesSpawned")]
         public TMP_Text TotalUnitsSpawned;
-        [FormerlySerializedAs("TotalEnemiesAlive")]
         public TMP_Text TotalUnitsAlive;
 
         public TMP_Text TotalUnitsPreyKilled;
@@ -22,6 +19,8 @@ namespace Zoo
         {
             TotalUnitsSpawned.text = "0";
             TotalUnitsAlive.text = "0";
+            TotalUnitsPreyKilled.text = "0";
+            TotalUnitsPredatorKilled.text = "0";
             unitService.OnUnitSpawnedEvent += UpdateCounter;
             unitService.OnUnitDiedEvent += UpdateCounter;
         }
