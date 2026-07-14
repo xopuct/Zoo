@@ -54,29 +54,37 @@ namespace Zoo
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
             float halfWidth = gameService.WorldArea.size.x / 2;
             float halfLength = gameService.WorldArea.size.z / 2;
-
             while (attempts-- > 0)
             {
                 if (!CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.05f,
                         gameService.GravityTestMask, cameraService.Camera.transform.position.y * 2, out var pos))
                 {
-                    pos = new Vector3(Random.Range(-halfWidth, halfWidth),
-                        0,
-                        Random.Range(-halfLength, halfLength));
+                    pos = new Vector3(Random.Range(-halfWidth, halfWidth), 0, Random.Range(-halfLength, halfLength));
                 }
 
                 pos += spawnHeight;
-
-                if (!Physics.CheckBox(pos,
-                        unit.Collider.bounds.extents,
-                        unit.transform.rotation,
-                        gameService.SpawnMask,
-                        QueryTriggerInteraction.Collide))
+                if (attempts == 0)
+                {
+                    if (Physics.Raycast(pos.SetY(100), Vector3.down, out var hitInfo, 100, gameService.GravityTestMask))
+                    {
+                        unit.transform.position = hitInfo.point + Vector3.up * (unit.Collider.bounds.extents.y + 0.2f);
+                    }
+                    else
+                    {
+                        unit.transform.position = pos.SetY(gameService.Definition.FallbackHeight);
+                    }
+                }
+                else if (!Physics.CheckBox(pos,
+                             unit.Collider.bounds.extents,
+                             unit.transform.rotation,
+                             gameService.SpawnMask,
+                             QueryTriggerInteraction.Collide))
                 {
                     unit.transform.position = pos;
                     break;
                 }
             }
+
 
             pooledUnit.Activate();
         }

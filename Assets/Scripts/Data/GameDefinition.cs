@@ -17,5 +17,6 @@ namespace Zoo
         public float AnimalSpawnFirstTime = 0;
         public float AnimalSpawnIntervalMin = 1;
         public float AnimalSpawnIntervalMax = 2;
+        public float FallbackHeight = 10;
     }
 }
