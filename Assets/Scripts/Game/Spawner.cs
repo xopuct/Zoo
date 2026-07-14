@@ -3,6 +3,7 @@ using Reflex.Attributes;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using TriInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
@@ -89,7 +90,6 @@ namespace Zoo
                 unit.transform.SetParent(gameService.GetTransformFolder(animalDefinition.Name));
             }
 
-            unit.Init(animalDefinition, OnUnitDied);
 
             var attempts = 15;
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
@@ -119,11 +119,6 @@ namespace Zoo
                 }
             }
 
-            var container = gameObject.scene.GetSceneContainer();
-
-            GameObjectInjector.InjectRecursive(
-                unit.gameObject,
-                container);
             animalSpawnCount++;
         }
 
@@ -131,6 +126,9 @@ namespace Zoo
         {
             var group = GetPoolGroup(unit.Config);
             group.Release(unit);
+
+            var poolObject = unit.gameObject.GetComponent<PoolObject>();
+            poolObject.Deactivate();
             unit.gameObject.SetActive(false);
         }
 
@@ -144,7 +142,17 @@ namespace Zoo
         {
             var group = GetPoolGroup(animalDefinition);
             var unit = group.GetUnit();
+            unit.Init(animalDefinition, OnUnitDied);
             unit.gameObject.SetActive(true);
+            var container = gameObject.scene.GetSceneContainer();
+
+            GameObjectInjector.InjectRecursive(
+                unit.gameObject,
+                container);
+
+            var poolObject = unit.gameObject.GetOrAddComponent<PoolObject>();
+            poolObject.Activate();
+
             return unit;
         }
 

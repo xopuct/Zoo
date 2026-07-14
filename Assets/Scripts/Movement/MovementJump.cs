@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Zoo
 {
-    public class MovementJump : MonoBehaviour, IMovementController
+    public class MovementJump : MonoBehaviour, IMovementController, IPoolObjectActivateHandler,
+        IPoolObjectDeactivateHandler
     {
         public MovementConfigJump Config;
         public Vector3 MovementGoal { get; set; }
@@ -24,16 +25,11 @@ namespace Zoo
             return inst;
         }
 
-        public void InitInternal(Unit unit, MovementConfigJump config)
+        private void InitInternal(Unit unit, MovementConfigJump config)
         {
             Config = config;
             this.unit = unit;
             Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        }
-
-        private void OnEnable()
-        {
-            timeSinceLastJump = Time.timeSinceLevelLoad;
         }
 
         private void FixedUpdate()
@@ -65,6 +61,11 @@ namespace Zoo
 
         private void LateUpdate()
         {
+            RefreshIsGrounded();
+        }
+
+        private void RefreshIsGrounded()
+        {
             isGrounded = Physics.Linecast(transform.position,
                 transform.position + Vector3.down * unit.Collider.bounds.size.z * 0.5f,
                 gameService.GravityTestMask);
@@ -83,6 +84,18 @@ namespace Zoo
             float vx = distance / totalTime;
 
             return direction.normalized * vx + Vector3.up * vy;
+        }
+
+        public void Activate()
+        {
+            timeSinceLastJump = Time.timeSinceLevelLoad;
+            RefreshIsGrounded();
+        }
+
+        public void Deactivate()
+        {
+            MovementGoal = Vector3.zero;
+            isGrounded = false;
         }
     }
 }

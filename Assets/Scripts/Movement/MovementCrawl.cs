@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Zoo
 {
-    public class MovementCrawl : MonoBehaviour, IMovementController
+    public class MovementCrawl : MonoBehaviour, IMovementController, IPoolObjectDeactivateHandler
     {
         public MovementConfigCrawl Config;
         public Vector3 MovementGoal { get; set; }
@@ -41,6 +41,11 @@ namespace Zoo
             Gizmos.color = Color.purple;
             var nextDirection = (MovementGoal - transform.position).normalized;
             Gizmos.DrawLine(transform.position, transform.position + nextDirection * Config.Speed);
+        }
+
+        public void Deactivate()
+        {
+            MovementGoal = Vector3.zero;
         }
     }
 }

@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 namespace Zoo
 {
     // Trivial AI controller for zoo. Supports Roaming only
-    public class AiController : MonoBehaviour
+    public class AiController : MonoBehaviour, IPoolObjectActivateHandler
     {
         public Unit Unit;
 
@@ -42,11 +42,6 @@ namespace Zoo
             sqrProximity = largestUnitdSize * largestUnitdSize * 2;
             smallestWorldSize = Mathf.Min(gameService.WorldArea.size.x, gameService.WorldArea.size.z);
             UpdateMovementGoal();
-        }
-
-        private void OnDisable()
-        {
-            MovementGoal = Unit.transform.position;
         }
 
         private void Update()
@@ -164,6 +159,11 @@ namespace Zoo
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(MovementGoal, 0.1f);
+        }
+
+        public void Activate()
+        {
+            UpdateMovementGoal();
         }
     }
 }

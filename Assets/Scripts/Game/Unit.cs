@@ -19,7 +19,7 @@ namespace Zoo
         }
     }
 
-    public class Unit : MonoBehaviour
+    public class Unit : MonoBehaviour, IPoolObjectDeactivateHandler
     {
         public AnimalDefinition Config;
         public Rigidbody Rigidbody;
@@ -73,6 +73,13 @@ namespace Zoo
         public void Die()
         {
             onDeathAction?.Invoke(this);
+        }
+
+        public void Deactivate()
+        {
+            Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.angularVelocity = Vector3.zero;
+            Rigidbody.rotation = Quaternion.identity;
         }
     }
 }
