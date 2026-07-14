@@ -1,6 +1,6 @@
 namespace Zoo
 {
-    public enum CombatResult
+    public enum AttackResult
     {
         None,
         AttackerWinsClean,
@@ -9,36 +9,36 @@ namespace Zoo
 
     public static class AttackResolver
     {
-        public static CombatResult Resolve(Unit attacker, Unit defender)
+        public static AttackResult Resolve(Unit attacker, Unit defender)
         {
             if (attacker.HealthCurrent <= 0 ||
                 defender.HealthCurrent <= 0)
             {
-                return CombatResult.None;
+                return AttackResult.None;
             }
 
             if (attacker.Consumption != ConsumptionType.Predator)
             {
-                return CombatResult.None;
+                return AttackResult.None;
             }
 
             if (defender.Consumption == ConsumptionType.Prey)
             {
-                return CombatResult.AttackerWinsClean;
+                return AttackResult.AttackerWinsClean;
             }
 
             if (attacker.Rank > defender.Rank)
             {
-                return CombatResult.AttackerWinsClean;
+                return AttackResult.AttackerWinsClean;
             }
 
             if (attacker.Rank == defender.Rank &&
                 attacker.HealthCurrent >= defender.HealthCurrent)
             {
-                return CombatResult.AttackerWinsWithInjury;
+                return AttackResult.AttackerWinsWithInjury;
             }
 
-            return CombatResult.None;
+            return AttackResult.None;
         }
     }
 }

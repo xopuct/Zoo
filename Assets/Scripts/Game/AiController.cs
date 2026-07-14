@@ -93,7 +93,7 @@ namespace Zoo
                 return;
             }
 
-            if (MaybeKill(collision))
+            if (TryResolveAttack(collision))
             {
                 return;
             }
@@ -123,7 +123,7 @@ namespace Zoo
             return false;
         }
 
-        private bool MaybeKill(Collision collision)
+        private bool TryResolveAttack(Collision collision)
         {
             if ((gameService.UnitMask.value & (1 << collision.gameObject.layer)) == 0)
             {
@@ -134,12 +134,12 @@ namespace Zoo
 
             switch (AttackResolver.Resolve(Unit, opponent))
             {
-                case CombatResult.None:
+                case AttackResult.None:
                     return false;
-                case CombatResult.AttackerWinsClean:
+                case AttackResult.AttackerWinsClean:
                     gameService.Kill(opponent, Unit);
                     return true;
-                case CombatResult.AttackerWinsWithInjury:
+                case AttackResult.AttackerWinsWithInjury:
                     Unit.HealthCurrent = Mathf.Max(1, Unit.HealthCurrent - opponent.HealthCurrent);
                     gameService.Kill(opponent, Unit);
                     return true;
