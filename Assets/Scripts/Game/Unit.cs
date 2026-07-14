@@ -31,25 +31,48 @@ namespace Zoo
         public IMovementController MovementController;
         public ConsumptionType Consumption => Config.Consumption;
         public int Rank => Config.Rank;
+        public bool Inited { get; private set; }
+        private Action<Unit> onDeathAction;
 
-        public static Unit Construct(AnimalDefinition animalDefinition)
+        public static Unit ConstructEmpty(Transform parent)
         {
-            var inst = new GameObject($"Animal_{animalDefinition.Name}");
+            var inst = new GameObject();
+            if (parent)
+            {
+                inst.transform.SetParent(parent);
+            }
+
             inst.layer = LayerMask.NameToLayer("Unit");
             var unit = inst.AddComponent<Unit>();
-            var instVisual = GameObject.Instantiate(animalDefinition.Visuals, inst.transform);
-            instVisual.name = "Visuals";
-            unit.Collider = instVisual.GetComponent<Collider>();
-
-            unit.Config = animalDefinition;
             unit.Rigidbody = inst.AddComponent<Rigidbody>();
-            unit.HealthMax = UnityEngine.Random.Range(animalDefinition.HealthMin, animalDefinition.HealthMax);
-            unit.HealthCurrent = unit.HealthMax;
-
-            unit.MovementController = IMovementController.Construct(unit, animalDefinition);
-            AiController.Construct(unit);
-
+            unit.Inited = false;
             return unit;
+        }
+
+        public void Init(AnimalDefinition animalDefinition, Action<Unit> onDeathAction)
+        {
+            Config = animalDefinition;
+            HealthMax = UnityEngine.Random.Range(animalDefinition.HealthMin, animalDefinition.HealthMax);
+            HealthCurrent = HealthMax;
+            this.onDeathAction = onDeathAction;
+
+            if (!Inited)
+            {
+                gameObject.name = $"Animal_{animalDefinition.Name}";
+                gameObject.layer = LayerMask.NameToLayer("Unit");
+                var instVisual = Instantiate(animalDefinition.Visuals, transform);
+                instVisual.name = "Visuals";
+                Collider = instVisual.GetComponent<Collider>();
+                MovementController = IMovementController.Construct(this, animalDefinition);
+                AiController.Construct(this);
+            }
+
+            Inited = true;
+        }
+
+        public void Die()
+        {
+            onDeathAction?.Invoke(this);
         }
     }
 }

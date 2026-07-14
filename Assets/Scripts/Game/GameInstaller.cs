@@ -9,6 +9,7 @@ namespace Zoo
         public BoxCollider WorldArea;
         public LayerMask SpawnMask;
         public LayerMask CollisionMask;
+        public LayerMask GravityTestMask;
         public LayerMask UnitMask;
 
         public void InstallBindings(ContainerBuilder builder)
@@ -26,7 +27,8 @@ namespace Zoo
                 WorldArea = WorldArea,
                 SpawnMask = SpawnMask,
                 CollisionMask = CollisionMask,
-                UnitMask = UnitMask
+                UnitMask = UnitMask,
+                GravityTestMask = GravityTestMask
             };
         }
     }

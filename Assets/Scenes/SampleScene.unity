@@ -562,6 +562,12 @@ MonoBehaviour:
   SpawnMask:
     serializedVersion: 2
     m_Bits: 72
+  CollisionMask:
+    serializedVersion: 2
+    m_Bits: 64
+  UnitMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &338924185
 MonoBehaviour:
   m_ObjectHideFlags: 0

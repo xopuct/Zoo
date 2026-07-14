@@ -35,10 +35,15 @@ namespace Zoo
 
         private void Start()
         {
-            UpdateMovementGoal();
             largestUnitdSize = Mathf.Max(Unit.Collider.bounds.size.x, Unit.Collider.bounds.size.z);
             sqrProximity = largestUnitdSize * largestUnitdSize * 2;
             smallestWorldSize = Mathf.Min(GameService.WorldArea.size.x, GameService.WorldArea.size.z);
+            UpdateMovementGoal();
+        }
+
+        private void OnDisable()
+        {
+            MovementGoal = Unit.transform.position;
         }
 
         private void Update()

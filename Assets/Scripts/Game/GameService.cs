@@ -20,6 +20,7 @@ namespace Zoo
         public LayerMask SpawnMask { get; init; }
 
         public LayerMask CollisionMask { get; set; }
+        public LayerMask GravityTestMask { get; set; }
         public LayerMask UnitMask { get; set; }
 
         private Dictionary<string, GameObject> folders = new();
@@ -27,9 +28,8 @@ namespace Zoo
         public void Kill(Unit victim, Unit killer)
         {
             victim.HealthCurrent = 0;
-            GameObject.Destroy(victim.gameObject);
             OnKillEvent?.Invoke(victim, killer);
-            Debug.Log("Tasty");
+            victim.Die();
         }
 
         public Transform GetTransformFolder(string name)

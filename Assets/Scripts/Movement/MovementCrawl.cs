@@ -23,9 +23,7 @@ namespace Zoo
         {
             Config = config;
             this.unit = unit;
-            Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX |
-                                    RigidbodyConstraints.FreezeRotationZ |
-                                    RigidbodyConstraints.FreezePositionY;
+            Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
 
         private void FixedUpdate()

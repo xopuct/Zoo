@@ -1,3 +1,5 @@
+using System;
+using Reflex.Attributes;
 using UnityEngine;
 
 namespace Zoo
@@ -13,6 +15,9 @@ namespace Zoo
         private bool isGrounded;
         private float rotatePerSec = 0.5f;
 
+        [Inject]
+        private GameService gameService;
+
         public static MovementJump Construct(Unit unit, MovementConfigJump config)
         {
             var inst = unit.gameObject.AddComponent<MovementJump>();
@@ -25,6 +30,10 @@ namespace Zoo
             Config = config;
             this.unit = unit;
             Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        private void OnEnable()
+        {
             timeSinceLastJump = Time.timeSinceLevelLoad;
         }
 
@@ -52,7 +61,6 @@ namespace Zoo
                 Rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation,
                     Quaternion.LookRotation(nextDirection, Vector3.up),
                     rotatePerSec * Time.fixedDeltaTime));
-                return;
             }
         }
 
@@ -60,7 +68,7 @@ namespace Zoo
         {
             isGrounded = Physics.Linecast(transform.position,
                 transform.position + Vector3.down * unit.Collider.bounds.size.z * 0.5f,
-                1 << LayerMask.NameToLayer("Default"));
+                gameService.GravityTestMask);
         }
 
         // Todo Move to helpers
