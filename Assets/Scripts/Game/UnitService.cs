@@ -61,6 +61,10 @@ namespace Zoo
         {
             var group = GetPoolGroup(animalDefinition);
             var unit = group.GetUnit();
+            if (!unit.Inited)
+            {
+                unit.transform.SetParent(gameService.GetTransformFolder(animalDefinition.Name));
+            }
             unit.Init(animalDefinition, OnUnitDied);
             unit.gameObject.SetActive(true);
             var container = unit.gameObject.scene.GetSceneContainer();

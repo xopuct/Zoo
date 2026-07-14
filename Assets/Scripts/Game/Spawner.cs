@@ -49,10 +49,6 @@ namespace Zoo
         {
             var pooledUnit = unitService.CreateUnit(animalDefinition);
             var unit = pooledUnit.Obj;
-            if (!unit.Inited)
-            {
-                unit.transform.SetParent(gameService.GetTransformFolder(animalDefinition.Name));
-            }
 
             var attempts = 15;
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
