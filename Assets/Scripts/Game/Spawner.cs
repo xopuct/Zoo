@@ -148,10 +148,7 @@ namespace Zoo
             unit.Init(animalDefinition, OnUnitDied);
             unit.gameObject.SetActive(true);
             var container = gameObject.scene.GetSceneContainer();
-
-            GameObjectInjector.InjectRecursive(
-                unit.gameObject,
-                container);
+            GameObjectInjector.InjectRecursive(unit.gameObject, container);
 
             return unit;
         }
