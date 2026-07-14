@@ -96,6 +96,7 @@ namespace Zoo
         {
             MovementGoal = Vector3.zero;
             isGrounded = false;
+            rotatePerSec = 0.5f;
         }
     }
 }

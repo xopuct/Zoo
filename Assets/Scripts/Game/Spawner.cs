@@ -119,6 +119,9 @@ namespace Zoo
                 }
             }
 
+            var poolObject = unit.gameObject.GetOrAddComponent<PoolObject>();
+            poolObject.Activate();
+
             animalSpawnCount++;
         }
 
@@ -149,9 +152,6 @@ namespace Zoo
             GameObjectInjector.InjectRecursive(
                 unit.gameObject,
                 container);
-
-            var poolObject = unit.gameObject.GetOrAddComponent<PoolObject>();
-            poolObject.Activate();
 
             return unit;
         }
