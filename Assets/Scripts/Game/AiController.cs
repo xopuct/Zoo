@@ -10,7 +10,10 @@ namespace Zoo
         public Unit Unit;
 
         [Inject]
-        public GameService GameService;
+        private GameService gameService;
+
+        [Inject]
+        private CameraService cameraService;
 
         private Vector3 MovementGoal
         {
@@ -37,7 +40,7 @@ namespace Zoo
         {
             largestUnitdSize = Mathf.Max(Unit.Collider.bounds.size.x, Unit.Collider.bounds.size.z);
             sqrProximity = largestUnitdSize * largestUnitdSize * 2;
-            smallestWorldSize = Mathf.Min(GameService.WorldArea.size.x, GameService.WorldArea.size.z);
+            smallestWorldSize = Mathf.Min(gameService.WorldArea.size.x, gameService.WorldArea.size.z);
             UpdateMovementGoal();
         }
 
@@ -52,14 +55,31 @@ namespace Zoo
             {
                 UpdateMovementGoal();
             }
+
+            if (!CameraHelper.IsPointInsideCamera(cameraService.Camera, MovementGoal))
+            {
+                UpdateMovementGoal();
+            }
+
+            if (!CameraHelper.IsPointInsideCamera(cameraService.Camera, transform.position))
+            {
+                MovementGoal = Vector3.zero;
+            }
         }
 
         private void UpdateMovementGoal()
         {
-            //TODO  Use DI for resolve level size;
-            var worldSize = GameService.WorldArea.size;
-            MovementGoal = new Vector3(Random.Range(-worldSize.x, worldSize.x), transform.position.y,
-                Random.Range(-worldSize.y, worldSize.y));
+            if (CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.05f, gameService.GravityTestMask,
+                    cameraService.Camera.transform.position.y * 2, out var point))
+            {
+                MovementGoal = point.SetY(transform.position.y);
+            }
+            else
+            {
+                var worldSize = gameService.WorldArea.size;
+                MovementGoal = new Vector3(Random.Range(-worldSize.x, worldSize.x), transform.position.y,
+                    Random.Range(-worldSize.y, worldSize.y));
+            }
         }
 
         public void OnTriggerExit(Collider other)
@@ -100,7 +120,7 @@ namespace Zoo
         {
             movementGoal = Vector3.zero;
             if (!Physics.Linecast(position, direction.normalized * smallestWorldSize, out var hit,
-                    GameService.CollisionMask) ||
+                    gameService.CollisionMask) ||
                 Vector3.Distance(hit.collider.transform.position, position) > largestUnitdSize * 2)
             {
                 movementGoal = position + direction.normalized * smallestWorldSize * 1.5f;
@@ -112,7 +132,7 @@ namespace Zoo
 
         private bool MaybeKill(Collision collision)
         {
-            if ((GameService.UnitMask.value & (1 << collision.gameObject.layer)) == 0)
+            if ((gameService.UnitMask.value & (1 << collision.gameObject.layer)) == 0)
             {
                 return false;
             }
@@ -123,17 +143,17 @@ namespace Zoo
                 var opponentConsumption = opponent.Consumption;
                 if (opponentConsumption == ConsumptionType.Prey || opponent.Rank < Unit.Rank)
                 {
-                    GameService.Kill(opponent, Unit);
+                    gameService.Kill(opponent, Unit);
                     return true;
                 }
 
                 if (opponent.HealthCurrent <= Unit.HealthCurrent)
                 {
                     Unit.HealthCurrent -= opponent.HealthCurrent;
-                    GameService.Kill(opponent, Unit);
+                    gameService.Kill(opponent, Unit);
                     if (Unit.HealthCurrent == 0)
                     {
-                        GameService.Kill(Unit, opponent);
+                        gameService.Kill(Unit, opponent);
                     }
 
                     return true;
