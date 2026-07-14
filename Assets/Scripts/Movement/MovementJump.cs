@@ -40,7 +40,7 @@ namespace Zoo
                 var nextRotation = Quaternion.RotateTowards(transform.rotation,
                     Quaternion.LookRotation(dir.normalized, Vector3.up),
                     Config.JumpRotationArc);
-                var jumpVelocity = CalculateJumpVelocity(nextRotation * Vector3.forward,
+                var jumpVelocity = PhysicsHelper.CalculateJumpVelocity(nextRotation * Vector3.forward,
                     Mathf.Min(Config.JumpDistance, dir.magnitude),
                     Config.JumpHeight);
                 Rigidbody.linearVelocity = jumpVelocity;
@@ -71,20 +71,6 @@ namespace Zoo
                 gameService.GravityTestMask);
         }
 
-        // Todo Move to helpers
-        private static Vector3 CalculateJumpVelocity(Vector3 direction, float distance, float apexHeight)
-        {
-            float g = Mathf.Abs(Physics.gravity.y);
-
-            float vy = Mathf.Sqrt(2f * g * apexHeight);
-
-            float timeUp = vy / g;
-            float totalTime = timeUp * 2f;
-
-            float vx = distance / totalTime;
-
-            return direction.normalized * vx + Vector3.up * vy;
-        }
 
         public void Activate()
         {
