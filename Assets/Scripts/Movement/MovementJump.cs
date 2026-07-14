@@ -34,7 +34,7 @@ namespace Zoo
 
         private void FixedUpdate()
         {
-            if (Time.time - timeSinceLastJump > Config.JumpInterval)
+            if (Time.time - timeSinceLastJump > Config.JumpInterval && isGrounded)
             {
                 var dir = (MovementGoal - transform.position).SetY(0);
                 var nextRotation = Quaternion.RotateTowards(transform.rotation,
@@ -67,7 +67,7 @@ namespace Zoo
         private void RefreshIsGrounded()
         {
             isGrounded = Physics.Linecast(transform.position,
-                transform.position + Vector3.down * unit.Collider.bounds.size.z * 0.5f,
+                transform.position + Vector3.down * unit.Collider.bounds.size.y * 0.5f,
                 gameService.GravityTestMask);
         }
 
