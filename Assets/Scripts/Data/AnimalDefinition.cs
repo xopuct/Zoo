@@ -38,7 +38,6 @@ namespace Zoo
     {
         public float Speed;
         public float RotationSpeed;
-        public float RotationInterval;
     }
 
     [CreateAssetMenu(fileName = "NewAnimal.AnimalDefinition.asset", menuName = "Zoo/New Animal Config")]

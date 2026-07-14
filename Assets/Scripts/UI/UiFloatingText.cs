@@ -15,6 +15,8 @@ namespace Zoo
 
         [Inject]
         private GameService gameService;
+        [Inject]
+        private CameraService cameraService;
 
         private ObjectPool<CanvasGroup> pool;
         private readonly Dictionary<CanvasGroup, float> kills = new();
@@ -47,7 +49,7 @@ namespace Zoo
         {
             var floatingText = pool.Get();
             Vector3 screenPosition =
-                Camera.main.WorldToScreenPoint(
+                cameraService.Camera.WorldToScreenPoint(
                     killer.transform.position + Vector3.back * killer.Collider.bounds.extents.z);
 
             floatingText.transform.position = screenPosition;

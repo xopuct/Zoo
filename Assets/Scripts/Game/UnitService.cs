@@ -57,7 +57,7 @@ namespace Zoo
             this.gameService = gameService;
         }
 
-        public PoolObject<Unit> CreateUnit(AnimalDefinition animalDefinition)
+        public PooledHandle<Unit> CreateUnit(AnimalDefinition animalDefinition)
         {
             var group = GetPoolGroup(animalDefinition);
             var unit = group.GetUnit();
@@ -75,7 +75,7 @@ namespace Zoo
 
             OnUnitSpawnedEvent?.Invoke();
 
-            return new PoolObject<Unit>(poolObject, unit);
+            return new PooledHandle<Unit>(poolObject, unit);
         }
 
         private SpawnPoolGroup GetPoolGroup(AnimalDefinition animalDefinition)

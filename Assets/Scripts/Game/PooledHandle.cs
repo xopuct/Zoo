@@ -14,7 +14,7 @@ namespace Zoo
         public void Deactivate();
     }
 
-    public record PoolObject<T>(PoolObject PoolObjectBehaviour, T Obj)
+    public record PooledHandle<T>(PoolObject PoolObjectBehaviour, T Obj)
     {
         public void Activate()
         {
