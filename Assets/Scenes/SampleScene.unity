@@ -565,6 +565,9 @@ MonoBehaviour:
   CollisionMask:
     serializedVersion: 2
     m_Bits: 64
+  GravityTestMask:
+    serializedVersion: 2
+    m_Bits: 73
   UnitMask:
     serializedVersion: 2
     m_Bits: 8
@@ -1053,7 +1056,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 40, y: 4, z: 40}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &898231453
 Transform:
@@ -1063,12 +1066,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 898231451}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 2, z: 0.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.0033333332, y: 0, z: 0.0033333332}
+  m_LocalScale: {x: 1, y: 17.56, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2034341395}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1052928485
 GameObject:
@@ -1458,10 +1461,11 @@ Transform:
   m_GameObject: {fileID: 2034341392}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 150, y: 0, z: 150}
+  m_LocalPosition: {x: 0, y: -0.05, z: 0}
+  m_LocalScale: {x: 150, y: 0.1, z: 150}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 898231453}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2034341396
@@ -1695,7 +1699,6 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 338924183}
   - {fileID: 2034341395}
-  - {fileID: 898231453}
   - {fileID: 186548013}
   - {fileID: 1052928488}
   - {fileID: 875452996}

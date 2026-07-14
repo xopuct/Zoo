@@ -40,10 +40,8 @@ namespace Zoo
             }
         }
 
-        [Inject]
-        public GameService GameService;
 
-        public GameDefinition Definition => GameService.Definition;
+        public GameDefinition Definition => gameService.Definition;
 
         private float lastSpawnTime;
         private float nextSpawnInterval;
@@ -51,6 +49,12 @@ namespace Zoo
         [ShowInInspector]
         [Title("Debug")]
         private int animalSpawnCount;
+
+        [Inject]
+        private GameService gameService;
+
+        [Inject]
+        private CameraService cameraService;
 
         private Dictionary<AnimalDefinition, SpawnPoolGroup> poolGroups = new();
 
@@ -82,23 +86,29 @@ namespace Zoo
             var unit = GetUnit(animalDefinition);
             if (!unit.Inited)
             {
-                unit.transform.SetParent(GameService.GetTransformFolder(animalDefinition.Name));
+                unit.transform.SetParent(gameService.GetTransformFolder(animalDefinition.Name));
             }
 
             unit.Init(animalDefinition, OnUnitDied);
 
             var attempts = 15;
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
-            float halfWidth = GameService.WorldArea.size.x / 2;
-            float halfLength = GameService.WorldArea.size.z / 2;
+            float halfWidth = gameService.WorldArea.size.x / 2;
+            float halfLength = gameService.WorldArea.size.z / 2;
 
             while (attempts-- > 0)
             {
-                var pos = new Vector3(Random.Range(-halfWidth, halfWidth),
-                    spawnHeight.y,
-                    Random.Range(-halfLength, halfLength));
+                if (!CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.05f,
+                        gameService.GravityTestMask, cameraService.Camera.transform.position.y * 2, out var pos))
+                {
+                    pos = new Vector3(Random.Range(-halfWidth, halfWidth),
+                        0,
+                        Random.Range(-halfLength, halfLength));
+                }
 
-                if (!Physics.CheckBox(pos, unit.Collider.bounds.extents / 2, Quaternion.identity, GameService.SpawnMask,
+                pos += spawnHeight;
+
+                if (!Physics.CheckBox(pos, unit.Collider.bounds.extents / 2, Quaternion.identity, gameService.SpawnMask,
                         QueryTriggerInteraction.Collide))
                 {
                     unit.transform.position = pos;
@@ -139,7 +149,7 @@ namespace Zoo
         {
             if (!poolGroups.TryGetValue(animalDefinition, out var group))
             {
-                group = new SpawnPoolGroup(animalDefinition, GameService.GetTransformFolder(animalDefinition.Name));
+                group = new SpawnPoolGroup(animalDefinition, gameService.GetTransformFolder(animalDefinition.Name));
                 poolGroups.Add(animalDefinition, group);
             }
 
