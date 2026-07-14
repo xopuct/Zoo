@@ -38,7 +38,7 @@ namespace Zoo
         }
 
 
-        private void OnKill(Unit killer, Unit victim)
+        private void OnKill(Unit victim, Unit killer)
         {
             Show(killer);
         }
