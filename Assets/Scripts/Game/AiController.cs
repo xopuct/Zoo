@@ -1,3 +1,4 @@
+using System;
 using Reflex.Attributes;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -130,24 +131,21 @@ namespace Zoo
             }
 
             var opponent = collision.gameObject.GetComponent<Unit>();
-            if (Unit.Consumption == ConsumptionType.Predator && opponent.HealthCurrent > 0)
+
+            switch (AttackResolver.Resolve(Unit, opponent))
             {
-                var opponentConsumption = opponent.Consumption;
-                if (opponentConsumption == ConsumptionType.Prey || opponent.Rank < Unit.Rank)
-                {
+                case CombatResult.None:
+                    return false;
+                case CombatResult.AttackerWinsClean:
                     gameService.Kill(opponent, Unit);
                     return true;
-                }
-
-                if (opponent.Rank == Unit.Rank && opponent.HealthCurrent <= Unit.HealthCurrent)
-                {
+                case CombatResult.AttackerWinsWithInjury:
                     Unit.HealthCurrent = Mathf.Max(1, Unit.HealthCurrent - opponent.HealthCurrent);
                     gameService.Kill(opponent, Unit);
                     return true;
-                }
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-
-            return false;
         }
 
         private void OnDrawGizmosSelected()
