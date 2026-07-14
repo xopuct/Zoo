@@ -14,6 +14,19 @@ namespace Zoo
         public void Deactivate();
     }
 
+    public record PoolObject<T>(PoolObject PoolObjectBehaviour, T Obj)
+    {
+        public void Activate()
+        {
+            PoolObjectBehaviour.Activate();
+        }
+
+        public void Deactivate()
+        {
+            PoolObjectBehaviour.Deactivate();
+        }
+    }
+
     public class PoolObject : MonoBehaviour
     {
         private readonly List<IPoolObjectActivateHandler> handlersActivate = new();

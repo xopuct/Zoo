@@ -1,63 +1,26 @@
-using System.Collections.Generic;
 using Reflex.Attributes;
-using Reflex.Extensions;
-using Reflex.Injectors;
 using TriInspector;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 namespace Zoo
 {
     public class Spawner : MonoBehaviour
     {
-        public class SpawnPoolGroup
-        {
-            public AnimalDefinition Config { get; }
-            private readonly Queue<Unit> pooledObjects = new();
-            private readonly Transform rootTransform;
-
-            public void Release(Unit unit)
-            {
-                Assert.AreEqual(unit.Config, Config);
-                pooledObjects.Enqueue(unit);
-            }
-
-            public SpawnPoolGroup(AnimalDefinition config, Transform rootTransform)
-            {
-                this.rootTransform = rootTransform;
-                Config = config;
-            }
-
-            public Unit GetUnit()
-            {
-                if (!pooledObjects.TryDequeue(out var result))
-                {
-                    result = Unit.ConstructEmpty(rootTransform);
-                }
-
-                return result;
-            }
-        }
-
-
         public GameDefinition Definition => gameService.Definition;
 
         private float lastSpawnTime;
         private float nextSpawnInterval;
 
-        [ShowInInspector]
-        [Title("Debug")]
-        private int animalSpawnCount;
-
         [Inject]
         private GameService gameService;
 
         [Inject]
+        private UnitService unitService;
+
+        [Inject]
         private CameraService cameraService;
 
-        private Dictionary<AnimalDefinition, SpawnPoolGroup> poolGroups = new();
 
         private void Start()
         {
@@ -66,9 +29,9 @@ namespace Zoo
 
         public void Update()
         {
-            if (animalSpawnCount == 0 && Definition.AnimalSpawnFirstTime >= 0 &&
+            if (unitService.UnitsSpawned == 0 && Definition.AnimalSpawnFirstTime >= 0 &&
                 Time.time > Definition.AnimalSpawnFirstTime ||
-                animalSpawnCount > 0 && Time.time - lastSpawnTime > nextSpawnInterval)
+                unitService.UnitsSpawned > 0 && Time.time - lastSpawnTime > nextSpawnInterval)
             {
                 SpawnAnimal(SelectAnimal());
                 UpdateTime();
@@ -84,12 +47,12 @@ namespace Zoo
         [Title("Debug")]
         public void SpawnAnimal(AnimalDefinition animalDefinition)
         {
-            var unit = GetUnit(animalDefinition);
+            var pooledUnit = unitService.CreateUnit(animalDefinition);
+            var unit = pooledUnit.Obj;
             if (!unit.Inited)
             {
                 unit.transform.SetParent(gameService.GetTransformFolder(animalDefinition.Name));
             }
-
 
             var attempts = 15;
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
@@ -119,49 +82,14 @@ namespace Zoo
                 }
             }
 
-            var poolObject = unit.gameObject.GetOrAddComponent<PoolObject>();
-            poolObject.Activate();
-
-            animalSpawnCount++;
+            pooledUnit.Activate();
         }
 
-        private void OnUnitDied(Unit unit)
-        {
-            var group = GetPoolGroup(unit.Config);
-            group.Release(unit);
-
-            var poolObject = unit.gameObject.GetComponent<PoolObject>();
-            poolObject.Deactivate();
-            unit.gameObject.SetActive(false);
-        }
 
         private void UpdateTime()
         {
             lastSpawnTime = Time.time;
             nextSpawnInterval = Random.Range(Definition.AnimalSpawnIntervalMin, Definition.AnimalSpawnIntervalMax);
-        }
-
-        private Unit GetUnit(AnimalDefinition animalDefinition)
-        {
-            var group = GetPoolGroup(animalDefinition);
-            var unit = group.GetUnit();
-            unit.Init(animalDefinition, OnUnitDied);
-            unit.gameObject.SetActive(true);
-            var container = gameObject.scene.GetSceneContainer();
-            GameObjectInjector.InjectRecursive(unit.gameObject, container);
-
-            return unit;
-        }
-
-        private SpawnPoolGroup GetPoolGroup(AnimalDefinition animalDefinition)
-        {
-            if (!poolGroups.TryGetValue(animalDefinition, out var group))
-            {
-                group = new SpawnPoolGroup(animalDefinition, gameService.GetTransformFolder(animalDefinition.Name));
-                poolGroups.Add(animalDefinition, group);
-            }
-
-            return group;
         }
     }
 }

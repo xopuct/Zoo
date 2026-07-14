@@ -14,10 +14,10 @@ namespace Zoo
 
         public void InstallBindings(ContainerBuilder builder)
         {
-            builder.RegisterValue(Construct());
+            var gameService = Construct();
+            builder.RegisterValue(gameService);
             builder.RegisterValue(new CameraService { Camera = Camera.main });
-            // Probably better to instantiate it in the scene
-            new GameObject("Spawner", typeof(Spawner));
+            builder.RegisterValue(new UnitService(gameService));
         }
 
         private GameService Construct()
