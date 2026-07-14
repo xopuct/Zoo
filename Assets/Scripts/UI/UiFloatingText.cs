@@ -48,7 +48,8 @@ namespace Zoo
             var floatingText = pool.Get();
             Vector3 screenPosition =
                 Camera.main.WorldToScreenPoint(
-                    killer.transform.position + Vector3.up * 2f);
+                    killer.transform.position + Vector3.back * killer.Collider.bounds.extents.z);
+            //  screenPosition.y -= 30f;
 
             floatingText.transform.position = screenPosition;
             kills.Add(floatingText, Time.time + TimeToShow);
