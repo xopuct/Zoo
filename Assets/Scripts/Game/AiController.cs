@@ -81,7 +81,7 @@ namespace Zoo
             {
                 var worldSize = gameService.WorldArea.size;
                 MovementGoal = new Vector3(Random.Range(-worldSize.x, worldSize.x), transform.position.y,
-                    Random.Range(-worldSize.y, worldSize.y));
+                    Random.Range(-worldSize.z, worldSize.z));
             }
         }
 
@@ -139,7 +139,7 @@ namespace Zoo
                     return true;
                 }
 
-                if (opponent.HealthCurrent <= Unit.HealthCurrent)
+                if (opponent.Rank == Unit.Rank && opponent.HealthCurrent <= Unit.HealthCurrent)
                 {
                     Unit.HealthCurrent = Mathf.Max(1, Unit.HealthCurrent - opponent.HealthCurrent);
                     gameService.Kill(opponent, Unit);
