@@ -141,13 +141,8 @@ namespace Zoo
 
                 if (opponent.HealthCurrent <= Unit.HealthCurrent)
                 {
-                    Unit.HealthCurrent -= opponent.HealthCurrent;
+                    Unit.HealthCurrent = Mathf.Max(1, Unit.HealthCurrent - opponent.HealthCurrent);
                     gameService.Kill(opponent, Unit);
-                    if (Unit.HealthCurrent == 0)
-                    {
-                        Unit.HealthCurrent = 1;
-                    }
-
                     return true;
                 }
             }
