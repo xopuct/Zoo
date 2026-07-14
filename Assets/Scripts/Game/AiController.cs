@@ -85,6 +85,10 @@ namespace Zoo
                     {
                         Unit.HealthCurrent -= opponent.HealthCurrent;
                         GameService.Kill(opponent, Unit);
+                        if (Unit.HealthCurrent == 0)
+                        {
+                            GameService.Kill(Unit, opponent);
+                        }
                     }
                 }
             }
