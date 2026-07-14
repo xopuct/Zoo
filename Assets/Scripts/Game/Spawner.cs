@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using NUnit.Framework;
 using Reflex.Attributes;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using TriInspector;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 namespace Zoo

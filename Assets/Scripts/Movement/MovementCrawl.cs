@@ -1,6 +1,4 @@
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Zoo
 {
