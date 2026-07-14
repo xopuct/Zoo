@@ -63,6 +63,8 @@ namespace Zoo
                 }
 
                 pos += spawnHeight;
+
+                // Reserve the final attempt for guaranteed fallback spawning.
                 if (attempts == 0)
                 {
                     if (Physics.Raycast(pos.SetY(100), Vector3.down, out var hitInfo, 100, gameService.GravityTestMask))
