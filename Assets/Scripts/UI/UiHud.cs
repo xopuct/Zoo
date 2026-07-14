@@ -28,7 +28,7 @@ namespace Zoo
 
         private void UpdateCounter()
         {
-            TotalEnemiesSpawned.text = unitService.UnitsAlive.ToString();
+            TotalEnemiesSpawned.text = unitService.UnitsSpawned.ToString();
             TotalEnemiesAlive.text = unitService.UnitsAlive.ToString();
         }
     }
