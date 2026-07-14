@@ -145,7 +145,7 @@ namespace Zoo
                     gameService.Kill(opponent, Unit);
                     if (Unit.HealthCurrent == 0)
                     {
-                        gameService.Kill(Unit, opponent);
+                        Unit.HealthCurrent = 1;
                     }
 
                     return true;
