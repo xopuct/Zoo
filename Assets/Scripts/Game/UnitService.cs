@@ -45,6 +45,8 @@ namespace Zoo
 
         public int UnitsAlive { get; private set; }
         public int UnitsSpawned { get; private set; }
+        public int UnitsPreyDeaths { get; private set; }
+        public int UnitsPredatorDeaths { get; private set; }
 
         private Dictionary<AnimalDefinition, SpawnPoolGroup> poolGroups = new();
 
@@ -92,6 +94,14 @@ namespace Zoo
             poolObject.Deactivate();
             unit.gameObject.SetActive(false);
             UnitsAlive--;
+            if (unit.Consumption == ConsumptionType.Prey)
+            {
+                UnitsPreyDeaths++;
+            }
+            else
+            {
+                UnitsPredatorDeaths++;
+            }
 
             OnUnitDiedEvent?.Invoke();
         }
