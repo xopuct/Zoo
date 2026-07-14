@@ -30,10 +30,15 @@ namespace Zoo
         {
             Unit = unit;
             var largestScale = Mathf.Max(Unit.Collider.bounds.size.x, Unit.Collider.bounds.size.z);
-            sqrProximity = largestScale * largestScale;
+            sqrProximity = largestScale * largestScale * 2;
         }
 
-        public void Update()
+        private void Start()
+        {
+            UpdateMovementGoal();
+        }
+
+        private void Update()
         {
             if ((Unit.transform.position - MovementGoal).sqrMagnitude < sqrProximity)
             {
