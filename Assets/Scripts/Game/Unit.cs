@@ -15,7 +15,7 @@ namespace Zoo
         public IMovementController MovementController;
         public ConsumptionType Consumption => Config.Consumption;
         public int Rank => Config.Rank;
-        public bool Inited { get; private set; }
+        public bool Initialized { get; private set; }
         private Action<Unit> onDeathAction;
 
         public static Unit ConstructEmpty(Transform parent)
@@ -29,7 +29,7 @@ namespace Zoo
             inst.layer = LayerMask.NameToLayer("Unit");
             var unit = inst.AddComponent<Unit>();
             unit.Rigidbody = inst.AddComponent<Rigidbody>();
-            unit.Inited = false;
+            unit.Initialized = false;
             return unit;
         }
 
@@ -40,7 +40,7 @@ namespace Zoo
             HealthCurrent = HealthMax;
             this.onDeathAction = onDeathAction;
 
-            if (!Inited)
+            if (!Initialized)
             {
                 gameObject.name = $"Animal_{animalDefinition.Name}";
                 gameObject.layer = LayerMask.NameToLayer("Unit");
@@ -51,7 +51,7 @@ namespace Zoo
                 AiController.Construct(this);
             }
 
-            Inited = true;
+            Initialized = true;
         }
 
         public void Die()

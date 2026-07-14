@@ -24,7 +24,7 @@ namespace Zoo
 
         private float sqrProximity = 0.2f * 0.2f;
         private float smallestWorldSize = 0;
-        private float largestUnitdSize = 0;
+        private float largestUnitSize = 0;
 
         public static void Construct(Unit unit)
         {
@@ -39,8 +39,8 @@ namespace Zoo
 
         private void Start()
         {
-            largestUnitdSize = Mathf.Max(Unit.Collider.bounds.size.x, Unit.Collider.bounds.size.z);
-            sqrProximity = largestUnitdSize * largestUnitdSize * 2;
+            largestUnitSize = Mathf.Max(Unit.Collider.bounds.size.x, Unit.Collider.bounds.size.z);
+            sqrProximity = largestUnitSize * largestUnitSize * 2;
             smallestWorldSize = Mathf.Min(gameService.WorldArea.size.x, gameService.WorldArea.size.z);
             UpdateMovementGoal();
         }
@@ -114,7 +114,7 @@ namespace Zoo
             movementGoal = Vector3.zero;
             if (!Physics.Linecast(position, position + direction.normalized * smallestWorldSize, out var hit,
                     gameService.CollisionMask) ||
-                hit.distance > largestUnitdSize * 2)
+                hit.distance > largestUnitSize * 2)
             {
                 movementGoal = position + direction.normalized * smallestWorldSize * 1.5f;
                 return true;

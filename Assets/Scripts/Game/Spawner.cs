@@ -7,6 +7,11 @@ namespace Zoo
 {
     public class Spawner : MonoBehaviour
     {
+        private const int SpawnAttempts = 15;
+        private const float ViewportMargin = 0.05f;
+        private const float FallbackRayHeight = 100f;
+        private const float SurfaceOffset = 0.2f;
+
         public GameDefinition Definition => gameService.Definition;
 
         private float lastSpawnTime;
@@ -50,13 +55,14 @@ namespace Zoo
             var pooledUnit = unitService.CreateUnit(animalDefinition);
             var unit = pooledUnit.Obj;
 
-            var attempts = 15;
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
             float halfWidth = gameService.WorldArea.size.x / 2;
             float halfLength = gameService.WorldArea.size.z / 2;
+
+            var attempts = SpawnAttempts + 1;
             while (attempts-- > 0)
             {
-                if (!CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.05f,
+                if (!CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, ViewportMargin,
                         gameService.GravityTestMask, cameraService.Camera.transform.position.y * 2, out var pos))
                 {
                     pos = new Vector3(Random.Range(-halfWidth, halfWidth), 0, Random.Range(-halfLength, halfLength));
@@ -67,9 +73,9 @@ namespace Zoo
                 // Reserve the final attempt for guaranteed fallback spawning.
                 if (attempts == 0)
                 {
-                    if (Physics.Raycast(pos.SetY(100), Vector3.down, out var hitInfo, 100, gameService.GravityTestMask))
+                    if (Physics.Raycast(pos.SetY(FallbackRayHeight), Vector3.down, out var hitInfo, FallbackRayHeight, gameService.GravityTestMask))
                     {
-                        unit.transform.position = hitInfo.point + Vector3.up * (unit.Collider.bounds.extents.y + 0.2f);
+                        unit.transform.position = hitInfo.point + Vector3.up * (unit.Collider.bounds.extents.y + SurfaceOffset);
                     }
                     else
                     {
