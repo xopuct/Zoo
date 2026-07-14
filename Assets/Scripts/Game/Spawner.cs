@@ -46,10 +46,11 @@ namespace Zoo
         public void SpawnAnimal(AnimalDefinition animalDefinition)
         {
             var unit = Unit.Construct(animalDefinition);
+            unit.transform.SetParent(GameService.GetTransformFolder(animalDefinition.Name));
             var attempts = 15;
             var spawnHeight = Vector3.up * unit.Collider.bounds.extents.y;
             float halfWidth = GameService.WorldArea.size.x / 2;
-            float halfLength =  GameService.WorldArea.size.z / 2;
+            float halfLength = GameService.WorldArea.size.z / 2;
 
             while (attempts-- > 0)
             {
@@ -57,14 +58,13 @@ namespace Zoo
                     spawnHeight.y,
                     Random.Range(-halfLength, halfLength));
 
-                if (!Physics.CheckBox(pos, unit.Collider.bounds.extents / 2, Quaternion.identity,  GameService.SpawnMask,
+                if (!Physics.CheckBox(pos, unit.Collider.bounds.extents / 2, Quaternion.identity, GameService.SpawnMask,
                         QueryTriggerInteraction.Collide))
                 {
                     unit.transform.position = pos;
                     break;
                 }
             }
-
 
             var container = gameObject.scene.GetSceneContainer();
 

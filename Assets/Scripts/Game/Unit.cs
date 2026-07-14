@@ -34,7 +34,7 @@ namespace Zoo
 
         public static Unit Construct(AnimalDefinition animalDefinition)
         {
-            var inst = new GameObject($"Animal/{animalDefinition.Name}");
+            var inst = new GameObject($"Animal_{animalDefinition.Name}");
             inst.layer = LayerMask.NameToLayer("Unit");
             var unit = inst.AddComponent<Unit>();
             var instVisual = GameObject.Instantiate(animalDefinition.Visuals, inst.transform);
