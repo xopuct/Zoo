@@ -108,7 +108,10 @@ namespace Zoo
 
                 pos += spawnHeight;
 
-                if (!Physics.CheckBox(pos, unit.Collider.bounds.extents / 2, Quaternion.identity, gameService.SpawnMask,
+                if (!Physics.CheckBox(pos,
+                        unit.Collider.bounds.extents,
+                        unit.transform.rotation,
+                        gameService.SpawnMask,
                         QueryTriggerInteraction.Collide))
                 {
                     unit.transform.position = pos;
