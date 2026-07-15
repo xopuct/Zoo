@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Reflex.Attributes;
 using UnityEngine;
@@ -63,12 +62,6 @@ namespace Zoo
             }
         }
 
-        // private void LateUpdate()
-        // {
-        //     RefreshIsGrounded();
-        // }
-
-
         private void OnCollisionEnter(Collision collision)
         {
             if ((gameService.GravityTestMask.value & (1 << collision.gameObject.layer)) == 0)
@@ -99,7 +92,6 @@ namespace Zoo
                 transform.position + Vector3.down * unit.Collider.bounds.size.y * 0.5f,
                 gameService.GravityTestMask);
         }
-
 
         public void Activate()
         {
