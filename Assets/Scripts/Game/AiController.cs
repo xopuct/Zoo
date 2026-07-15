@@ -8,6 +8,8 @@ namespace Zoo
     // Trivial AI controller for zoo. Supports Roaming only
     public class AiController : MonoBehaviour, IPoolObjectActivateHandler
     {
+        private const float FallbackMovementMargin = 0.4f;
+
         public Unit Unit;
 
         [Inject]
@@ -52,34 +54,16 @@ namespace Zoo
                 UpdateMovementGoal();
             }
 
-            // Impossible right now but will be useful when camera moves.
-            if (!cameraService.IsPointInsideCamera(transform.position) && !cameraService.IsPointInsideCamera(MovementGoal))
+            if (!cameraService.IsPointInsideCamera(transform.position) &&
+                !cameraService.IsPointInsideCamera(MovementGoal))
             {
-                if (CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.5f, gameService.GravityTestMask,
-                        cameraService.Camera.transform.position.y * 2, out var point))
-                {
-                    MovementGoal = point.SetY(transform.position.y);
-                }
-                else
-                {
-                    MovementGoal = Vector3.zero;
-                }
+                UpdateMovementGoal(FallbackMovementMargin);
             }
         }
 
-        private void UpdateMovementGoal()
+        private void UpdateMovementGoal(float viewportMargin = 0)
         {
-            if (CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.05f, gameService.GravityTestMask,
-                    cameraService.Camera.transform.position.y * 2, out var point))
-            {
-                MovementGoal = point.SetY(transform.position.y);
-            }
-            else
-            {
-                var worldSize = gameService.WorldArea.size;
-                MovementGoal = new Vector3(Random.Range(-worldSize.x, worldSize.x), transform.position.y,
-                    Random.Range(-worldSize.z, worldSize.z));
-            }
+            MovementGoal = cameraService.GetRandomPoint(viewportMargin);
         }
 
         private void OnCollisionEnter(Collision collision)

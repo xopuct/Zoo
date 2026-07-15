@@ -28,5 +28,18 @@ namespace Zoo
         {
             return rect.Contains(worldPosition.SetY(worldPosition.z));
         }
+
+        /// <summary>
+        /// Returns random point inside camera viewport
+        /// </summary>
+        /// <param name="viewportMargin"> Margin in viewport units</param>
+        /// <returns></returns>
+        public Vector3 GetRandomPoint(float viewportMargin = 0)
+        {
+            var marginXUnit = rect.width * viewportMargin;
+            var marginYUnit = rect.width * viewportMargin;
+            return new Vector3(Random.Range(rect.xMin + marginXUnit, rect.xMax - marginXUnit), 0,
+                Random.Range(rect.yMin + marginYUnit, rect.yMax - marginYUnit));
+        }
     }
 }
