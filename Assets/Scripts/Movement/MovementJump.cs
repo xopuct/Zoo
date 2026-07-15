@@ -96,11 +96,13 @@ namespace Zoo
         public void Activate()
         {
             timeSinceLastJump = Time.timeSinceLevelLoad;
+            groundContacts.Clear();
             RefreshIsGrounded();
         }
 
         public void Deactivate()
         {
+            groundContacts.Clear();
             MovementGoal = Vector3.zero;
             isGrounded = false;
             rotatePerSec = 0.5f;
