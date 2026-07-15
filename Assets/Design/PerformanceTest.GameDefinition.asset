@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Zoo.GameDefinition
   Animals:
   - Animal: {fileID: 11400000, guid: bb534039dfa504b2f88fabd7a96dc269, type: 2}
-    Weight: 5
+    Weight: 10
   - Animal: {fileID: 11400000, guid: e0bec837c481b49789ac24bbbd1faa35, type: 2}
     Weight: 1
   AnimalSpawnFirstTime: 0
