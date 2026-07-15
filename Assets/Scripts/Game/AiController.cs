@@ -52,12 +52,8 @@ namespace Zoo
                 UpdateMovementGoal();
             }
 
-            if (!CameraHelper.IsPointInsideCamera(cameraService.Camera, MovementGoal))
-            {
-                UpdateMovementGoal();
-            }
-
-            if (!CameraHelper.IsPointInsideCamera(cameraService.Camera, transform.position))
+            // Impossible right now but will be useful when camera moves.
+            if (!cameraService.IsPointInsideCamera(transform.position) && !cameraService.IsPointInsideCamera(MovementGoal))
             {
                 if (CameraHelper.TryGetRandomPointInViewport(cameraService.Camera, 0.5f, gameService.GravityTestMask,
                         cameraService.Camera.transform.position.y * 2, out var point))
