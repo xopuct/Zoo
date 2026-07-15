@@ -15,7 +15,7 @@ namespace Zoo
         private float timeSinceLastJump;
         private bool isGrounded;
         private float rotatePerSec = 0.5f;
-        private readonly HashSet<Collision> isGroundedCollision = new();
+        private readonly HashSet<Collider> groundContacts = new();
 
         [Inject]
         private GameService gameService;
@@ -50,7 +50,7 @@ namespace Zoo
                 var flightTime = -2f * jumpVelocity.y / Physics.gravity.y;
                 rotatePerSec = 4 * Quaternion.Angle(transform.rotation, nextRotation) / flightTime;
                 isGrounded = false;
-                isGroundedCollision.Clear();
+                groundContacts.Clear();
             }
 
             if (!isGrounded)
@@ -73,7 +73,7 @@ namespace Zoo
             {
                 if (collision.GetContact(i).normal.y > 0.5f)
                 {
-                    isGroundedCollision.Add(collision);
+                    groundContacts.Add(collision.collider);
                     isGrounded = true;
                     return;
                 }
@@ -82,8 +82,8 @@ namespace Zoo
 
         private void OnCollisionExit(Collision collision)
         {
-            isGroundedCollision.Remove(collision);
-            isGrounded = isGroundedCollision.Count > 0;
+            groundContacts.Remove(collision.collider);
+            isGrounded = groundContacts.Count > 0;
         }
 
         private void RefreshIsGrounded()
