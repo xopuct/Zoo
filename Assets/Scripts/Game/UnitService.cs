@@ -61,14 +61,20 @@ namespace Zoo
         {
             var group = GetPoolGroup(animalDefinition);
             var unit = group.GetUnit();
-            if (!unit.Initialized)
+            var isInitialized = unit.Initialized;
+            if (!isInitialized)
             {
                 unit.transform.SetParent(gameService.GetTransformFolder(animalDefinition.Name));
             }
+
             unit.Init(animalDefinition, OnUnitDied);
             unit.gameObject.SetActive(true);
-            var container = unit.gameObject.scene.GetSceneContainer();
-            GameObjectInjector.InjectRecursive(unit.gameObject, container);
+            if (!isInitialized)
+            {
+                var container = unit.gameObject.scene.GetSceneContainer();
+                GameObjectInjector.InjectRecursive(unit.gameObject, container);
+            }
+
             var poolObject = unit.GetOrAddComponent<PoolObject>();
             UnitsSpawned++;
             UnitsAlive++;
