@@ -975,7 +975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8011e7b714664438a5f9e1f964914b54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zoo.GameInstaller
-  Definition: {fileID: 11400000, guid: abd775ae4b818434ea3316134de59288, type: 2}
+  Definition: {fileID: 11400000, guid: 3a31b26147bcd475bbd59ec5f6fa5521, type: 2}
   WorldArea: {fileID: 898231452}
   SpawnMask:
     serializedVersion: 2

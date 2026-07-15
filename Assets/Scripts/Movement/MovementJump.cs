@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Reflex.Attributes;
 using UnityEngine;
 
@@ -14,6 +16,7 @@ namespace Zoo
         private float timeSinceLastJump;
         private bool isGrounded;
         private float rotatePerSec = 0.5f;
+        private readonly HashSet<Collision> isGroundedCollision = new();
 
         [Inject]
         private GameService gameService;
@@ -48,6 +51,7 @@ namespace Zoo
                 var flightTime = -2f * jumpVelocity.y / Physics.gravity.y;
                 rotatePerSec = 4 * Quaternion.Angle(transform.rotation, nextRotation) / flightTime;
                 isGrounded = false;
+                isGroundedCollision.Clear();
             }
 
             if (!isGrounded)
@@ -59,9 +63,34 @@ namespace Zoo
             }
         }
 
-        private void LateUpdate()
+        // private void LateUpdate()
+        // {
+        //     RefreshIsGrounded();
+        // }
+
+
+        private void OnCollisionEnter(Collision collision)
         {
-            RefreshIsGrounded();
+            if ((gameService.GravityTestMask.value & (1 << collision.gameObject.layer)) == 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i < collision.contactCount; i++)
+            {
+                if (collision.GetContact(i).normal.y > 0.5f)
+                {
+                    isGroundedCollision.Add(collision);
+                    isGrounded = true;
+                    return;
+                }
+            }
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            isGroundedCollision.Remove(collision);
+            isGrounded = isGroundedCollision.Count > 0;
         }
 
         private void RefreshIsGrounded()

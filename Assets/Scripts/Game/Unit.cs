@@ -46,6 +46,8 @@ namespace Zoo
                 gameObject.layer = LayerMask.NameToLayer("Unit");
                 var instVisual = Instantiate(animalDefinition.Visuals, transform);
                 instVisual.name = "Visuals";
+                instVisual.layer = gameObject.layer;
+
                 Collider = instVisual.GetComponent<Collider>();
                 MovementController = MovementFactory.Construct(this, animalDefinition);
                 AiController.Construct(this);
