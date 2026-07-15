@@ -27,8 +27,8 @@ namespace Zoo
 
         public void Kill(Unit victim, Unit killer)
         {
-            victim.Die();
             OnKillEvent?.Invoke(victim, killer);
+            victim.Die();
         }
 
         public Transform GetTransformFolder(string name)
