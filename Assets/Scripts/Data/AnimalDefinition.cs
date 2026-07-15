@@ -70,7 +70,7 @@ namespace Zoo
 
         private void OnValidate()
         {
-            HealthMin = Mathf.Max(0, HealthMin);
+            HealthMin = Mathf.Max(1, HealthMin);
             HealthMax = Mathf.Max(HealthMin, HealthMax);
         }
 
