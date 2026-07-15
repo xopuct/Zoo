@@ -36,10 +36,10 @@ namespace Zoo
         /// <returns></returns>
         public Vector3 GetRandomPoint(float viewportMargin = 0)
         {
-            var marginXUnit = rect.width * viewportMargin;
-            var marginYUnit = rect.width * viewportMargin;
-            return new Vector3(Random.Range(rect.xMin + marginXUnit, rect.xMax - marginXUnit), 0,
-                Random.Range(rect.yMin + marginYUnit, rect.yMax - marginYUnit));
+            var marginX = rect.width * viewportMargin;
+            var marginZ = rect.height * viewportMargin;
+            return new Vector3(Random.Range(rect.xMin + marginX, rect.xMax - marginX), 0,
+                Random.Range(rect.yMin + marginZ, rect.yMax - marginZ));
         }
     }
 }

@@ -49,21 +49,19 @@ namespace Zoo
 
         private void Update()
         {
-            if ((Unit.transform.position - MovementGoal).sqrMagnitude < sqrProximity)
-            {
-                UpdateMovementGoal();
-            }
-
-            if (!cameraService.IsPointInsideCamera(transform.position) &&
-                !cameraService.IsPointInsideCamera(MovementGoal))
+            if (!cameraService.IsPointInsideCamera(transform.position))
             {
                 UpdateMovementGoal(FallbackMovementMargin);
+            }
+            else if ((transform.position - MovementGoal).sqrMagnitude < sqrProximity)
+            {
+                UpdateMovementGoal();
             }
         }
 
         private void UpdateMovementGoal(float viewportMargin = 0)
         {
-            MovementGoal = cameraService.GetRandomPoint(viewportMargin);
+            MovementGoal = cameraService.GetRandomPoint(viewportMargin).SetY(transform.position.y);;
         }
 
         private void OnCollisionEnter(Collision collision)
