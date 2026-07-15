@@ -5,18 +5,27 @@ namespace Zoo
 {
     public class Unit : MonoBehaviour, IPoolObjectDeactivateHandler
     {
-        public AnimalDefinition Config;
-        public Rigidbody Rigidbody;
-        public Collider Collider;
+        public AnimalDefinition Config { get; private set; }
+        public Rigidbody Rigidbody { get; private set; }
+        public Collider Collider { get; private set; }
 
-        public int HealthMax;
-        public int HealthCurrent;
+        public int HealthMax { get; private set; }
 
-        public IMovementController MovementController;
+        public int HealthCurrent
+        {
+            get => healthCurrent;
+            set { healthCurrent = Mathf.Clamp(value, 0, HealthMax); }
+        }
+
+        public IMovementController MovementController { get; private set; }
         public ConsumptionType Consumption => Config.Consumption;
         public int Rank => Config.Rank;
         public bool Initialized { get; private set; }
+
         private Action<Unit> onDeathAction;
+
+        [SerializeField]
+        private int healthCurrent;
 
         public static Unit ConstructEmpty(Transform parent)
         {
@@ -58,6 +67,7 @@ namespace Zoo
 
         public void Die()
         {
+            HealthCurrent = 0;
             onDeathAction?.Invoke(this);
         }
 

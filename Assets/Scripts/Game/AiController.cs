@@ -1,7 +1,6 @@
 using System;
 using Reflex.Attributes;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Zoo
 {
@@ -61,7 +60,7 @@ namespace Zoo
 
         private void UpdateMovementGoal(float viewportMargin = 0)
         {
-            MovementGoal = cameraService.GetRandomPoint(viewportMargin).SetY(transform.position.y);;
+            MovementGoal = cameraService.GetRandomPoint(viewportMargin).SetY(transform.position.y);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -103,12 +102,16 @@ namespace Zoo
 
         private bool TryResolveAttack(Collision collision)
         {
-            if ((gameService.UnitMask.value & (1 << collision.gameObject.layer)) == 0)
+            var otherRigidbody = collision.rigidbody;
+            if (otherRigidbody == null || !otherRigidbody.TryGetComponent(out Unit opponent))
             {
                 return false;
             }
 
-            var opponent = collision.gameObject.GetComponent<Unit>();
+            if ((gameService.UnitMask.value & (1 << opponent.gameObject.layer)) == 0)
+            {
+                return false;
+            }
 
             switch (AttackResolver.Resolve(Unit, opponent))
             {

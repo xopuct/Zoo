@@ -18,23 +18,21 @@ namespace Zoo
         Jump,
     }
 
-    public interface IMovementConfig
-    {
-    }
-
     [Serializable]
-    public class MovementConfigJump : IMovementConfig
+    public class MovementConfigJump
     {
         public float JumpDistance = 1;
         public float JumpInterval = 1;
+
         [FormerlySerializedAs("RotationSpeed")]
         [FormerlySerializedAs("RotationDeltaPerJump")]
         public float JumpRotationArc = 30;
+
         public float JumpHeight = 2;
     }
 
     [Serializable]
-    public class MovementConfigCrawl : IMovementConfig
+    public class MovementConfigCrawl
     {
         public float Speed;
         public float RotationSpeed;
