@@ -1,8 +1,6 @@
 using System;
 using TriInspector;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Zoo
 {
@@ -21,20 +19,26 @@ namespace Zoo
     [Serializable]
     public class MovementConfigJump
     {
+        [Min(0.1f)]
         public float JumpDistance = 1;
+
+        [Min(0.1f)]
         public float JumpInterval = 1;
 
-        [FormerlySerializedAs("RotationSpeed")]
-        [FormerlySerializedAs("RotationDeltaPerJump")]
+        [Min(0)]
         public float JumpRotationArc = 30;
 
+        [Min(0.5f)]
         public float JumpHeight = 2;
     }
 
     [Serializable]
     public class MovementConfigCrawl
     {
+        [Min(0)]
         public float Speed;
+
+        [Min(0)]
         public float RotationSpeed;
     }
 
