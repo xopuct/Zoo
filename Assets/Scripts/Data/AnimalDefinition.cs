@@ -64,6 +64,12 @@ namespace Zoo
         [InspectorName("Movement Config")]
         public MovementConfigCrawl ConfigMovementCrawl;
 
+        private void OnValidate()
+        {
+            HealthMin = Mathf.Max(0, HealthMin);
+            HealthMax = Mathf.Max(HealthMin, HealthMax);
+        }
+
         #region inspector helper
 
         private bool ShowIfPredator() => Consumption == ConsumptionType.Predator;
